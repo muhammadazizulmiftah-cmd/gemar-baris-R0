@@ -2,50 +2,41 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
-# GANTI INI dengan API Key yang kamu copy tadi
-API_KEY = st.secrets["GOOGLE_API_KEY"]
+# 1. SETUP KEAMANAN (MENGAMBIL KUNCI DARI SECRETS)
+try:
+    api_kunci = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=api_kunci)
+except:
+    st.error("Error: Kunci API tidak ditemukan di Settings Streamlit!")
 
-# Konfigurasi Gemini
-genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-2.0-flash')
+# 2. TAMPILAN APLIKASI
+st.set_page_config(page_title="Scan Gigi AI", layout="centered")
+st.title("🦷 Aplikasi Scan Gigi")
+st.write("Ambil foto gigi kamu dengan jelas untuk dicek oleh AI.")
 
-st.set_page_config(page_title="AI Scan Gigi Gratis", layout="centered")
+# 3. FITUR KAMERA
+foto = st.camera_input("Klik tombol di bawah untuk ambil foto")
 
-st.title("🦷 Dentist AI Scanner")
-st.info("Ambil foto gigi kamu dengan pencahayaan yang terang untuk hasil maksimal.")
-
-# Fitur Ambil Foto
-foto_kamera = st.camera_input("Ambil Foto Gigi")
-foto_upload = st.file_uploader("Atau upload foto dari galeri", type=['jpg', 'jpeg', 'png'])
-
-# Pilih salah satu input
-input_foto = foto_kamera if foto_kamera else foto_upload
-
-if input_foto:
-    img = Image.open(input_foto)
+if foto:
+    # Menampilkan gambar yang diambil
+    img = Image.open(foto)
     st.image(img, caption="Foto berhasil diambil", use_container_width=True)
     
-    if st.button("Mulai Analisa"):
-        with st.spinner("Sedang menganalisa kondisi gigi..."):
+    if st.button("Analisa Sekarang"):
+        with st.spinner("Tunggu sebentar, AI sedang melihat gigi kamu..."):
             try:
-                # Instruksi untuk Gemini (Prompt)
-                instruksi = """
-                Analisa gambar gigi ini dengan detail:
-                1. Apakah ada tanda Karies (lubang gigi)?
-                2. Apakah terlihat Karang Gigi (Tartar) atau Plak?
-                3. Bagaimana kondisi kebersihan secara umum?
+                # Menggunakan model Gemini terbaru
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                Berikan jawaban dalam Bahasa Indonesia yang ramah.
-                Wajib sertakan kalimat: 'Hasil ini hanyalah prediksi AI, silakan konsultasi ke dokter gigi untuk diagnosa akurat.'
-                """
+                # Perintah untuk AI
+                perintah = "Tolong analisa foto gigi ini. Jelaskan apakah ada karies (lubang), karang gigi, atau plak. Berikan saran dalam Bahasa Indonesia yang mudah dimengerti."
                 
-                response = model.generate_content([instruksi, img])
+                # Proses analisa
+                hasil = model.generate_content([perintah, img])
                 
-                st.success("Analisa Selesai!")
-                st.markdown(response.text)
-                
+                st.success("Hasil Analisa:")
+                st.write(hasil.text)
+                st.warning("PENTING: Ini hanya prediksi AI. Harap konsultasi ke dokter gigi asli untuk diagnosa medis.")
+            
             except Exception as e:
-                st.error(f"Terjadi kesalahan: {e}")
-
-st.divider()
-st.caption("Dibuat dengan Gemini AI Studio & Streamlit")
+                st.error(f"Maaf, terjadi masalah teknis: {e}")
