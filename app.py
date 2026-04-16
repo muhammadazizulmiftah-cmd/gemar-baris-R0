@@ -26,7 +26,7 @@ if foto:
         with st.spinner("Tunggu sebentar, AI sedang melihat gigi kamu..."):
             try:
                 # Menggunakan model Gemini terbaru
-                model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                model = genai.GenerativeModel('gemini-2.0-flash')
                 
                 # Perintah untuk AI
                 perintah = "Tolong analisa foto gigi ini. Jelaskan apakah ada karies (lubang), karang gigi, atau plak. Berikan saran dalam Bahasa Indonesia yang mudah dimengerti."
