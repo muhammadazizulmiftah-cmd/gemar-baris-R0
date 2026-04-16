@@ -7,7 +7,7 @@ API_KEY = "AQ.Ab8RN6LT0YbSFtgdtl5tvnC0DM8hUYzzyPl0rQyfD20lr4GioA"
 
 # Konfigurasi Gemini
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 st.set_page_config(page_title="AI Scan Gigi Gratis", layout="centered")
 
