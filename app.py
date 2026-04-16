@@ -3,7 +3,7 @@ import google.generativeai as genai
 from PIL import Image
 
 # GANTI INI dengan API Key yang kamu copy tadi
-API_KEY = "AQ.Ab8RN6LT0YbSFtgdtl5tvnC0DM8hUYzzyPl0rQyfD20lr4GioA"
+API_KEY = st.secrets["GOOGLE_API_KEY"]
 
 # Konfigurasi Gemini
 genai.configure(api_key=API_KEY)
